@@ -24,11 +24,22 @@ class Program
                 foreach(var line in fileData)
                 {
                     var splitted = line.Split(",",StringSplitOptions.RemoveEmptyEntries);
-                    var photoName = splitted[1];
-                    var photoLocation = splitted[2];
-                    var photoTimeOfDay = splitted[3];
-                    Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay);
-                    trip.Photos.Add(readPhoto);
+                    string trackingType = splitted[0];
+                    if(trackingType == "Photo")
+                    {
+                        var photoName = splitted[1];
+                        var photoLocation = splitted[2];
+                        var photoTimeOfDay = splitted[3];
+                        Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay);
+                        trip.Photos.Add(readPhoto);
+                    }else if(trackingType == "Cost")
+                    {
+                        string costDescription = splitted[1];
+                        double costPrice = double.Parse(splitted[2]);
+                        var costLocation = splitted[3];
+                        Cost readCost = new Cost(costDescription,costPrice,costLocation);
+                        trip.Costs.Add(readCost);
+                    }
                 }
             }
         }
@@ -62,7 +73,7 @@ class Program
                 do{
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
-                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Exit"};
+                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost", "Exit"};
                     trackEntryCommand = AskForSelection("Please select an action", trackEntryCommandChoices);
                     Console.WriteLine("Selected Action = " + trackEntryCommand);
                     
@@ -80,10 +91,29 @@ class Program
                             {
                                 trip.Photos.Add(newPhoto);
                                 string tripFileName = selectedTrip + ".txt";
-                                SyncPhotos(selectedTrip,Trips);
+                                SyncTripData(selectedTrip,Trips);
                             }
                         }
                     }
+
+                    if(trackEntryCommand == "Track Cost"){
+
+                        string costDescription = AskForInput("Please enter a description: ");
+                        double costPrice = double.Parse(AskForInput(Environment.NewLine + "Please enter the price: "));
+                        string costLocation = AskForInput(Environment.NewLine + "Please enter the location of purchase: ");
+                        Cost newCost = new Cost(costDescription, costPrice, costLocation);
+                        foreach(Trip trip in Trips)
+                        {
+                            if(selectedTrip == trip.Name)
+                            {
+                                trip.Costs.Add(newCost);
+                                string tripFileName = selectedTrip + ".txt";
+                                SyncTripData(selectedTrip,Trips);
+                            }
+                        }
+                    }
+
+
                 }while (trackEntryCommand!= "Exit");
             }
         }while(selectedTrip != "Exit Application");
@@ -114,7 +144,7 @@ class Program
         Console.WriteLine("Trips have been synchronized to the text file");
     }
 
-    public static void SyncPhotos(string targetTrip, List<Trip>Trips)
+    public static void SyncTripData(string targetTrip, List<Trip>Trips)
     {
         foreach (Trip trip in Trips){
             if (trip.Name == targetTrip){
@@ -124,6 +154,11 @@ class Program
                     File.AppendAllText(fileName,"Photo," + photo.Name + "," + photo.Location + "," + photo.TimeOfDay + Environment.NewLine);
                 }
                 Console.WriteLine(Environment.NewLine + "Photos Synced for: " + trip.Name);
+
+                foreach (Cost cost in trip.Costs){
+                    File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + Environment.NewLine);
+                }
+                Console.WriteLine(Environment.NewLine + "Costs Synced for: " + trip.Name);
             }
         }
     }
