@@ -39,6 +39,13 @@ class Program
                         var costLocation = splitted[3];
                         Cost readCost = new Cost(costDescription,costPrice,costLocation);
                         trip.Costs.Add(readCost);
+                    }else if(trackingType == "Note")
+                    {
+                        string noteName = splitted[1];
+                        string noteDescription = splitted[2];
+                        string noteSource = splitted[3];
+                        Note readNote = new Note(noteName,noteDescription,noteSource);
+                        trip.Notes.Add(readNote);
                     }
                 }
             }
@@ -73,7 +80,7 @@ class Program
                 do{
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
-                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost", "Exit"};
+                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Exit"};
                     trackEntryCommand = AskForSelection("Please select an action", trackEntryCommandChoices);
                     Console.WriteLine("Selected Action = " + trackEntryCommand);
                     
@@ -94,9 +101,7 @@ class Program
                                 SyncTripData(selectedTrip,Trips);
                             }
                         }
-                    }
-
-                    if(trackEntryCommand == "Track Cost"){
+                    }else if(trackEntryCommand == "Track Cost"){
 
                         string costDescription = AskForInput("Please enter a description: ");
                         double costPrice = double.Parse(AskForInput(Environment.NewLine + "Please enter the price: "));
@@ -107,6 +112,21 @@ class Program
                             if(selectedTrip == trip.Name)
                             {
                                 trip.Costs.Add(newCost);
+                                string tripFileName = selectedTrip + ".txt";
+                                SyncTripData(selectedTrip,Trips);
+                            }
+                        }
+                    }else if(trackEntryCommand == "Track Note"){
+
+                        string noteName = AskForInput("Please enter the name of the note:  ");
+                        string noteDescription = AskForInput(Environment.NewLine + "Please enter a description: ");
+                        string noteSource = AskForInput(Environment.NewLine + "Please enter the source of the information: ");
+                        Note newNote = new Note(noteName, noteDescription, noteSource);
+                        foreach(Trip trip in Trips)
+                        {
+                            if(selectedTrip == trip.Name)
+                            {
+                                trip.Notes.Add(newNote);
                                 string tripFileName = selectedTrip + ".txt";
                                 SyncTripData(selectedTrip,Trips);
                             }
@@ -159,6 +179,11 @@ class Program
                     File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + Environment.NewLine);
                 }
                 Console.WriteLine(Environment.NewLine + "Costs Synced for: " + trip.Name);
+                
+                foreach (Note note in trip.Notes){
+                    File.AppendAllText(fileName,"Note," + note.Name + "," + note.Description + "," + note.Source + Environment.NewLine);
+                }
+                Console.WriteLine(Environment.NewLine + "Notes Synced for: " + trip.Name);
             }
         }
     }

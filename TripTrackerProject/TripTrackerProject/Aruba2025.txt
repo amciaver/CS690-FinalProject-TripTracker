@@ -1,2 +1,4 @@
 Photo,Fofoti Tree,Eagle Beach,Morning
 Cost,Water Bottle,4.5,Eagle Beach
+Note,Coral Reef,The coral reefs are in danger,Tour Guide
+Note,Seagull,This one albino seagull has lived for 40 years,Beach Guy

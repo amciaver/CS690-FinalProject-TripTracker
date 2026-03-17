@@ -34,16 +34,34 @@ public class Cost {
     }
 }
 
+public class Note {
+    public string Name {get;}
+    public string Description {get;}
+    public string Source {get;}
+
+    public Note(string name, string description, string source){
+        this.Name = name;
+        this.Description = description;
+        this.Source = source;
+    }
+
+    public override string ToString()
+    {
+        return this.Name;
+    }
+}
 
 public class Trip {
     public string Name {get;}
     public List<Photo> Photos {get;}
     public List<Cost> Costs {get;}
+    public List<Note> Notes {get;}
 
     public Trip(string name){
         this.Name = name;
         this.Photos = new List<Photo>();
         this.Costs = new List<Cost>();
+        this.Notes = new List<Note>();
     }
 
     public override string ToString(){
