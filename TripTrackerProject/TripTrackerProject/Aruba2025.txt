@@ -1,1 +1,2 @@
-Photo,Fofoti Tree,Eagle Beach,Day
+Photo,Fofoti Tree,Eagle Beach,Morning
+Cost,Water Bottle,4.5,Eagle Beach
