@@ -1,0 +1,2 @@
+Photo,Deer,Grand Canyon,Morning
+Note,Red Rocks,Rock color is red due to high iron content,Tour Guide
