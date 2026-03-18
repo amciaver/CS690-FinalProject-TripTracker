@@ -104,7 +104,16 @@ class Program
                     }else if(trackEntryCommand == "Track Cost"){
 
                         string costDescription = AskForInput("Please enter a description: ");
-                        double costPrice = double.Parse(AskForInput(Environment.NewLine + "Please enter the price: "));
+                        
+                        double costPrice;
+                        while (true){
+                            string input = AskForInput(Environment.NewLine + "Please enter the price: ");
+                            if(double.TryParse(input, out costPrice)){
+                                break;
+                            }
+                            Console.WriteLine("Invalid Input. Please enter a number.");
+                        }
+                
                         string costLocation = AskForInput(Environment.NewLine + "Please enter the location of purchase: ");
                         Cost newCost = new Cost(costDescription, costPrice, costLocation);
                         foreach(Trip trip in Trips)
