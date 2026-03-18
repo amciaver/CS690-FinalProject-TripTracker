@@ -27,16 +27,16 @@ class Program
                     string trackingType = splitted[0];
                     if(trackingType == "Photo")
                     {
-                        var photoName = splitted[1];
-                        var photoLocation = splitted[2];
-                        var photoTimeOfDay = splitted[3];
+                        string photoName = splitted[1];
+                        string photoLocation = splitted[2];
+                        string photoTimeOfDay = splitted[3];
                         Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay);
                         trip.Photos.Add(readPhoto);
                     }else if(trackingType == "Cost")
                     {
                         string costDescription = splitted[1];
                         double costPrice = double.Parse(splitted[2]);
-                        var costLocation = splitted[3];
+                        string costLocation = splitted[3];
                         Cost readCost = new Cost(costDescription,costPrice,costLocation);
                         trip.Costs.Add(readCost);
                     }else if(trackingType == "Note")
@@ -80,7 +80,7 @@ class Program
                 do{
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
-                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Exit"};
+                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Exit"};
                     trackEntryCommand = AskForSelection("Please select an action", trackEntryCommandChoices);
                     Console.WriteLine("Selected Action = " + trackEntryCommand);
                     
@@ -131,9 +131,52 @@ class Program
                                 SyncTripData(selectedTrip,Trips);
                             }
                         }
+                    }else if(trackEntryCommand == "Display Trip Records"){
+                        foreach (Trip trip in Trips){
+                            if(selectedTrip == trip.Name){
+                                
+                                if(trip.Photos.Count == 0){
+                                    Console.WriteLine("No photos recorded!");
+                                }else{
+                                    var photoTable = new Table();
+                                    photoTable.AddColumn("Photo Name");
+                                    photoTable.AddColumn("Location");
+                                    photoTable.AddColumn("Time of Day");
+                                    foreach(var photo in trip.Photos) {
+                                        photoTable.AddRow(photo.Name, photo.Location, photo.TimeOfDay);
+                                    }
+                                    AnsiConsole.Write(photoTable);
+                                }
+                                    
+
+                                if(trip.Costs.Count == 0){
+                                    Console.WriteLine("No costs recorded!");
+                                }else{
+                                    var costTable = new Table();
+                                    costTable.AddColumn("Cost Description");
+                                    costTable.AddColumn("Price");
+                                    costTable.AddColumn("Location");
+                                    foreach(var cost in trip.Costs) {
+                                        costTable.AddRow(cost.Description, cost.Price.ToString(), cost.Location);
+                                    }
+                                    AnsiConsole.Write(costTable);
+                                }
+
+                                if(trip.Notes.Count == 0){
+                                    Console.WriteLine("No notes recorded!");
+                                }else{
+                                    var noteTable = new Table();
+                                    noteTable.AddColumn("Note Name");
+                                    noteTable.AddColumn("Description");
+                                    noteTable.AddColumn("Source");
+                                    foreach(var note in trip.Notes) {
+                                        noteTable.AddRow(note.Name, note.Description, note.Source);
+                                    }
+                                    AnsiConsole.Write(noteTable);
+                                }
+                            }
+                        }
                     }
-
-
                 }while (trackEntryCommand!= "Exit");
             }
         }while(selectedTrip != "Exit Application");
