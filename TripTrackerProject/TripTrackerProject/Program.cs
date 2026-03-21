@@ -54,20 +54,23 @@ class Program
         tripSelectChoices.Add("Enter New Trip");
         tripSelectChoices.Add("Exit Application");
         
-        string selectedTrip = null;
+        string selectedTrip;
         do{    
             selectedTrip = AskForSelection("Please select a Trip", tripSelectChoices);
             Console.WriteLine("You have selected: " + selectedTrip);
-        
-            string tripListFileName = "trips.txt";
             
-            string tripName = null;
+            string tripName;
             if(selectedTrip == "Enter New Trip"){
                 tripName = AskForInput("Enter new trip name: ");
                 if(tripSelectChoices.Contains(tripName)){
                     Console.WriteLine("Trip already exists!");
                 }else{
                 tripSelectChoices.Add(tripName);
+                tripSelectChoices.Remove("Enter New Trip");
+                tripSelectChoices.Remove("Exit Application");
+                tripSelectChoices.Add("Enter New Trip");
+                tripSelectChoices.Add("Exit Application");
+
                 Trip newTripName = new Trip(tripName);
                 Trips.Add(newTripName);
                 SyncTrips(Trips);
@@ -75,14 +78,14 @@ class Program
                 }
             }
 
-            string trackEntryCommand = null;
+            string trackEntryCommand;
             if(selectedTrip != "Exit Application"){
                 do{
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
-                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Exit"};
+                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Return To Home Menu"};
                     trackEntryCommand = AskForSelection("Please select an action", trackEntryCommandChoices);
-                    Console.WriteLine("Selected Action = " + trackEntryCommand);
+                    Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
                     if(trackEntryCommand == "Track Photo"){
 
@@ -186,14 +189,23 @@ class Program
                             }
                         }
                     }
-                }while (trackEntryCommand!= "Exit");
+                }while (trackEntryCommand!= "Return To Home Menu");
             }
         }while(selectedTrip != "Exit Application");
     }
 
-    public static string AskForInput(string message){
-        Console.WriteLine(message);
-        return Console.ReadLine();
+    public static string AskForInput(string message)
+    {
+        string? input;
+        do{
+            Console.WriteLine(message);
+            input = Console.ReadLine();
+            if(string.IsNullOrEmpty(input)){
+                Console.WriteLine("Please enter an input.");
+            }
+
+        }while(string.IsNullOrEmpty(input));
+        return input;
     }
 
     public static string AskForSelection(string message, List<string> choices){
