@@ -93,9 +93,10 @@ class Program
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
                     if(trackEntryCommand == "Track Photo"){
-
-                        string photoName = AskForInput("Please enter the photo name:");
-                        string photoLocation = AskForInput(Environment.NewLine + "Please enter the photo location:");
+                        
+                        string photoName = AskForTrackItemString("Please enter the photo name:");
+                        string photoLocation = AskForTrackItemString("Please enter the photo location");
+                        //string photoLocation = AskForInput(Environment.NewLine + "Please enter the photo location:");
                         List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
                         string photoTime = AskForSelection("Please select the time of day the photo was taken:", timeOfDayChoices);
                         
@@ -111,7 +112,8 @@ class Program
                         }
                     }else if(trackEntryCommand == "Track Cost"){
 
-                        string costDescription = AskForInput("Please enter a description: ");
+                        string costDescription = AskForTrackItemString("Please enter a description: ");
+                        //string costDescription = AskForInput("Please enter a description: ");
                         
                         double costPrice;
                         while (true){
@@ -121,8 +123,9 @@ class Program
                             }
                             Console.WriteLine("Invalid Input. Please enter a number.");
                         }
-                
-                        string costLocation = AskForInput(Environment.NewLine + "Please enter the location of purchase: ");
+
+                        string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
+                        //string costLocation = AskForInput(Environment.NewLine + "Please enter the location of purchase: ");
                         Cost newCost = new Cost(costDescription, costPrice, costLocation);
                         foreach(Trip trip in Trips)
                         {
@@ -135,9 +138,12 @@ class Program
                         }
                     }else if(trackEntryCommand == "Track Note"){
 
-                        string noteName = AskForInput("Please enter the name of the note:  ");
-                        string noteDescription = AskForInput(Environment.NewLine + "Please enter a description: ");
-                        string noteSource = AskForInput(Environment.NewLine + "Please enter the source of the information: ");
+                        //string noteName = AskForInput("Please enter the name of the note:  ");
+                        string noteName = AskForTrackItemString("Please enter the name of the note: ");
+                        string noteDescription = AskForTrackItemString(Environment.NewLine + "Please enter a description");
+                        //string noteDescription = AskForInput(Environment.NewLine + "Please enter a description: ");
+                        string noteSource = AskForTrackItemString(Environment.NewLine + "Please enter the source of the information: ");
+                        //string noteSource = AskForInput(Environment.NewLine + "Please enter the source of the information: ");
                         Note newNote = new Note(noteName, noteDescription, noteSource);
                         foreach(Trip trip in Trips)
                         {
@@ -213,6 +219,17 @@ class Program
         return input;
     }
 
+    public static string AskForTrackItemString(string message){
+        string itemAttribute;
+        do{
+            itemAttribute = AskForInput(message);
+            if(itemAttribute.Contains(",")){
+                Console.WriteLine("Input cannot contain ',' characters!");
+            }
+        }while(itemAttribute.Contains(","));
+        return itemAttribute;
+    }
+
     public static string AskForSelection(string message, List<string> choices){
         return AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -242,17 +259,17 @@ class Program
                 foreach (Photo photo in trip.Photos){
                     File.AppendAllText(fileName,"Photo," + photo.Name + "," + photo.Location + "," + photo.TimeOfDay + Environment.NewLine);
                 }
-                Console.WriteLine(Environment.NewLine + "Photos Synced for: " + trip.Name);
+                Console.WriteLine("Photos Synced for: " + trip.Name);
 
                 foreach (Cost cost in trip.Costs){
                     File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + Environment.NewLine);
                 }
-                Console.WriteLine(Environment.NewLine + "Costs Synced for: " + trip.Name);
+                Console.WriteLine("Costs Synced for: " + trip.Name);
                 
                 foreach (Note note in trip.Notes){
                     File.AppendAllText(fileName,"Note," + note.Name + "," + note.Description + "," + note.Source + Environment.NewLine);
                 }
-                Console.WriteLine(Environment.NewLine + "Notes Synced for: " + trip.Name);
+                Console.WriteLine("Notes Synced for: " + trip.Name);
             }
         }
     }
