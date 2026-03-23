@@ -11,9 +11,14 @@ class Program
         Console.WriteLine(Environment.NewLine + "Welcome to the TripTracker Application!");
         List<Trip> Trips = new List<Trip>();
         
-        var tripsFileContent = File.ReadAllLines("trips.txt");
-        foreach(var tripName in tripsFileContent){
-            Trips.Add(new Trip(tripName));
+
+        if(File.Exists("trips.txt")){
+            var tripsFileContent = File.ReadAllLines("trips.txt");
+            foreach(var tripName in tripsFileContent){
+                Trips.Add(new Trip(tripName));
+            }
+        }else{
+            File.Create("trips.txt");
         }
 
         foreach(Trip trip in Trips){
