@@ -17,9 +17,7 @@ class Program
             foreach(var tripName in tripsFileContent){
                 Trips.Add(new Trip(tripName));
             }
-        }else{
-            File.Create("trips.txt");
-        }
+        };
 
         foreach(Trip trip in Trips){
             string fileName = trip.Name + ".txt";
@@ -96,7 +94,6 @@ class Program
                         
                         string photoName = AskForTrackItemString("Please enter the photo name:");
                         string photoLocation = AskForTrackItemString("Please enter the photo location");
-                        //string photoLocation = AskForInput(Environment.NewLine + "Please enter the photo location:");
                         List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
                         string photoTime = AskForSelection("Please select the time of day the photo was taken:", timeOfDayChoices);
                         
@@ -113,8 +110,6 @@ class Program
                     }else if(trackEntryCommand == "Track Cost"){
 
                         string costDescription = AskForTrackItemString("Please enter a description: ");
-                        //string costDescription = AskForInput("Please enter a description: ");
-                        
                         double costPrice;
                         while (true){
                             string input = AskForInput(Environment.NewLine + "Please enter the price: ");
@@ -125,7 +120,6 @@ class Program
                         }
 
                         string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
-                        //string costLocation = AskForInput(Environment.NewLine + "Please enter the location of purchase: ");
                         Cost newCost = new Cost(costDescription, costPrice, costLocation);
                         foreach(Trip trip in Trips)
                         {
@@ -138,12 +132,9 @@ class Program
                         }
                     }else if(trackEntryCommand == "Track Note"){
 
-                        //string noteName = AskForInput("Please enter the name of the note:  ");
                         string noteName = AskForTrackItemString("Please enter the name of the note: ");
                         string noteDescription = AskForTrackItemString(Environment.NewLine + "Please enter a description");
-                        //string noteDescription = AskForInput(Environment.NewLine + "Please enter a description: ");
                         string noteSource = AskForTrackItemString(Environment.NewLine + "Please enter the source of the information: ");
-                        //string noteSource = AskForInput(Environment.NewLine + "Please enter the source of the information: ");
                         Note newNote = new Note(noteName, noteDescription, noteSource);
                         foreach(Trip trip in Trips)
                         {
