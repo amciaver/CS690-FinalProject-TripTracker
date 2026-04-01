@@ -33,7 +33,8 @@ class Program
                         string photoName = splitted[1];
                         string photoLocation = splitted[2];
                         string photoTimeOfDay = splitted[3];
-                        Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay);
+                        var photoDateTimeStamp = splitted[4];
+                        Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay,photoDateTimeStamp);
                         trip.Photos.Add(readPhoto);
                     }else if(trackingType == "Cost")
                     {
@@ -96,8 +97,8 @@ class Program
                         string photoLocation = AskForTrackItemString("Please enter the photo location");
                         List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
                         string photoTime = AskForSelection("Please select the time of day the photo was taken:", timeOfDayChoices);
-                        
-                        Photo newPhoto = new Photo(photoName, photoLocation, photoTime);
+                        string photoDateTimeStamp = DateTime.Now.ToString();
+                        Photo newPhoto = new Photo(photoName, photoLocation, photoTime, photoDateTimeStamp);
                         foreach(Trip trip in Trips)
                         {
                             if(selectedTrip == trip.Name)
@@ -156,8 +157,9 @@ class Program
                                     photoTable.AddColumn("Photo Name");
                                     photoTable.AddColumn("Location");
                                     photoTable.AddColumn("Time of Day");
+                                    photoTable.AddColumn("Entry Date & Time");
                                     foreach(var photo in trip.Photos) {
-                                        photoTable.AddRow(photo.Name, photo.Location, photo.TimeOfDay);
+                                        photoTable.AddRow(photo.Name, photo.Location, photo.TimeOfDay, photo.DateTimeStamp);
                                     }
                                     AnsiConsole.Write(photoTable);
                                 }
@@ -228,9 +230,6 @@ class Program
             .AddChoices(choices));
     }
 
-    public static void FileSaver(string fileName, string writeToFile){
-        File.AppendAllText(fileName, writeToFile);
-    }
     public static void SyncTrips(List<Trip>Trips)
     {
         File.Delete("trips.txt");
@@ -248,7 +247,7 @@ class Program
                 string fileName = trip.Name + ".txt";
                 File.Delete(fileName);
                 foreach (Photo photo in trip.Photos){
-                    File.AppendAllText(fileName,"Photo," + photo.Name + "," + photo.Location + "," + photo.TimeOfDay + Environment.NewLine);
+                    File.AppendAllText(fileName,"Photo," + photo.Name + "," + photo.Location + "," + photo.TimeOfDay + "," + photo.DateTimeStamp + Environment.NewLine);
                 }
                 Console.WriteLine("Photos Synced for: " + trip.Name);
 
