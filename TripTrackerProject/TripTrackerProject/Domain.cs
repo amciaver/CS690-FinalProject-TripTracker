@@ -4,11 +4,13 @@ public class Photo {
     public string Name {get;}
     public string Location {get;}
     public string TimeOfDay {get;}
+    public string DateTimeStamp {get;}
 
-    public Photo(string name, string location, string timeOfDay){
+    public Photo(string name, string location, string timeOfDay, string dateTimeStamp){
         this.Name = name;
         this.Location = location;
         this.TimeOfDay = timeOfDay;
+        this.DateTimeStamp = dateTimeStamp;
     }
 
     public override string ToString()
