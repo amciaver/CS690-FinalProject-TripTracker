@@ -49,7 +49,8 @@ class Program
                         string noteName = splitted[1];
                         string noteDescription = splitted[2];
                         string noteSource = splitted[3];
-                        Note readNote = new Note(noteName,noteDescription,noteSource);
+                        string noteDateTimeStamp = splitted[4];
+                        Note readNote = new Note(noteName,noteDescription,noteSource, noteDateTimeStamp);
                         trip.Notes.Add(readNote);
                     }
                 }
@@ -138,7 +139,8 @@ class Program
                         string noteName = AskForTrackItemString("Please enter the name of the note: ");
                         string noteDescription = AskForTrackItemString(Environment.NewLine + "Please enter a description");
                         string noteSource = AskForTrackItemString(Environment.NewLine + "Please enter the source of the information: ");
-                        Note newNote = new Note(noteName, noteDescription, noteSource);
+                        string noteDateTimeStamp = DateTime.Now.ToString();
+                        Note newNote = new Note(noteName, noteDescription, noteSource, noteDateTimeStamp);
                         foreach(Trip trip in Trips)
                         {
                             if(selectedTrip == trip.Name)
@@ -188,8 +190,9 @@ class Program
                                     noteTable.AddColumn("Note Name");
                                     noteTable.AddColumn("Description");
                                     noteTable.AddColumn("Source");
+                                    noteTable.AddColumn("Entry Date & Time");
                                     foreach(var note in trip.Notes) {
-                                        noteTable.AddRow(note.Name, note.Description, note.Source);
+                                        noteTable.AddRow(note.Name, note.Description, note.Source, note.DateTimeStamp);
                                     }
                                     AnsiConsole.Write(noteTable);
                                 }
@@ -260,7 +263,7 @@ class Program
                 Console.WriteLine("Costs Synced for: " + trip.Name);
                 
                 foreach (Note note in trip.Notes){
-                    File.AppendAllText(fileName,"Note," + note.Name + "," + note.Description + "," + note.Source + Environment.NewLine);
+                    File.AppendAllText(fileName,"Note," + note.Name + "," + note.Description + "," + note.Source + "," + note.DateTimeStamp + Environment.NewLine);
                 }
                 Console.WriteLine("Notes Synced for: " + trip.Name);
             }

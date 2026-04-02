@@ -42,11 +42,13 @@ public class Note {
     public string Name {get;}
     public string Description {get;}
     public string Source {get;}
+    public string DateTimeStamp {get;}
 
-    public Note(string name, string description, string source){
+    public Note(string name, string description, string source, string dateTimeStamp){
         this.Name = name;
         this.Description = description;
         this.Source = source;
+        this.DateTimeStamp = dateTimeStamp;
     }
 
     public override string ToString()
