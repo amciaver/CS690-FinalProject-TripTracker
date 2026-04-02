@@ -23,11 +23,13 @@ public class Cost {
     public string Description {get;}
     public double Price {get;}
     public string Location {get;}
+    public string DateTimeStamp {get;}
 
-    public Cost(string description, double price, string location){
+    public Cost(string description, double price, string location, string dateTimeStamp){
         this.Description = description;
         this.Price = price;
         this.Location = location;
+        this.DateTimeStamp = dateTimeStamp;
     }
 
     public override string ToString()

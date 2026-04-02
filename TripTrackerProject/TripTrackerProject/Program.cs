@@ -33,7 +33,7 @@ class Program
                         string photoName = splitted[1];
                         string photoLocation = splitted[2];
                         string photoTimeOfDay = splitted[3];
-                        var photoDateTimeStamp = splitted[4];
+                        string photoDateTimeStamp = splitted[4];
                         Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay,photoDateTimeStamp);
                         trip.Photos.Add(readPhoto);
                     }else if(trackingType == "Cost")
@@ -41,7 +41,8 @@ class Program
                         string costDescription = splitted[1];
                         double costPrice = double.Parse(splitted[2]);
                         string costLocation = splitted[3];
-                        Cost readCost = new Cost(costDescription,costPrice,costLocation);
+                        string costDateTimeStamp = splitted[4];
+                        Cost readCost = new Cost(costDescription,costPrice,costLocation, costDateTimeStamp);
                         trip.Costs.Add(readCost);
                     }else if(trackingType == "Note")
                     {
@@ -121,7 +122,8 @@ class Program
                         }
 
                         string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
-                        Cost newCost = new Cost(costDescription, costPrice, costLocation);
+                        string costDateTimeStamp = DateTime.Now.ToString();
+                        Cost newCost = new Cost(costDescription, costPrice, costLocation, costDateTimeStamp);
                         foreach(Trip trip in Trips)
                         {
                             if(selectedTrip == trip.Name)
@@ -172,8 +174,9 @@ class Program
                                     costTable.AddColumn("Cost Description");
                                     costTable.AddColumn("Price");
                                     costTable.AddColumn("Location");
+                                    costTable.AddColumn("Entry Date & Time");
                                     foreach(var cost in trip.Costs) {
-                                        costTable.AddRow(cost.Description, cost.Price.ToString(), cost.Location);
+                                        costTable.AddRow(cost.Description, cost.Price.ToString(), cost.Location, cost.DateTimeStamp);
                                     }
                                     AnsiConsole.Write(costTable);
                                 }
@@ -252,7 +255,7 @@ class Program
                 Console.WriteLine("Photos Synced for: " + trip.Name);
 
                 foreach (Cost cost in trip.Costs){
-                    File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + Environment.NewLine);
+                    File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + "," + cost.DateTimeStamp + Environment.NewLine);
                 }
                 Console.WriteLine("Costs Synced for: " + trip.Name);
                 
