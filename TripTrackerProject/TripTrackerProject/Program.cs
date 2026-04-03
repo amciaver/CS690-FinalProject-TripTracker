@@ -89,7 +89,7 @@ class Program
                 do{
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
-                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Return To Home Menu"};
+                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost", "Return To Home Menu"};
                     trackEntryCommand = AskForSelection("Please select an action", trackEntryCommandChoices);
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
@@ -120,6 +120,7 @@ class Program
                                 break;
                             }
                             Console.WriteLine("Invalid Input. Please enter a number.");
+
                         }
 
                         string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
@@ -178,7 +179,7 @@ class Program
                                     costTable.AddColumn("Location");
                                     costTable.AddColumn("Entry Date & Time");
                                     foreach(var cost in trip.Costs) {
-                                        costTable.AddRow(cost.Description, cost.Price.ToString(), cost.Location, cost.DateTimeStamp);
+                                        costTable.AddRow(cost.Description, cost.Price.ToString("N2"), cost.Location, cost.DateTimeStamp);
                                     }
                                     AnsiConsole.Write(costTable);
                                 }
@@ -196,6 +197,16 @@ class Program
                                     }
                                     AnsiConsole.Write(noteTable);
                                 }
+                            }
+                        }
+                    }else if(trackEntryCommand == "Total Trip Cost"){
+                        foreach (Trip trip in Trips){
+                            if(selectedTrip == trip.Name){
+                                double tripCostSum = 0;
+                                foreach(var cost in trip.Costs)
+                                    tripCostSum += cost.Price;
+                                    
+                                Console.WriteLine("Total trip cost is: $" + tripCostSum.ToString("N2"));
                             }
                         }
                     }
