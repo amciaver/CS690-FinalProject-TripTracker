@@ -9,52 +9,11 @@ public class Datamanager{
     public List <Trip> Trips {get;}
 
     public Datamanager(){
+
         Trips = new List<Trip>();
 
-        if(File.Exists("trips.txt")){
-            var tripsFileContent = File.ReadAllLines("trips.txt");
-            foreach(var tripName in tripsFileContent){
-                Trips.Add(new Trip(tripName));
-            }
-        }
-
-        foreach(Trip trip in Trips){
-            string fileName = trip.Name + ".txt";
-            if (File.Exists(fileName))
-            {
-                var fileData = File.ReadAllLines(fileName);
-                foreach(var line in fileData)
-                {
-                    var splitted = line.Split(",",StringSplitOptions.RemoveEmptyEntries);
-                    string trackingType = splitted[0];
-                    
-                    if(trackingType == "Photo"){
-                        string photoName = splitted[1];
-                        string photoLocation = splitted[2];
-                        string photoTimeOfDay = splitted[3];
-                        string photoDateTimeStamp = splitted[4];
-                        Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay,photoDateTimeStamp);
-                        trip.Photos.Add(readPhoto);
-
-                    }else if(trackingType == "Cost"){
-                        string costDescription = splitted[1];
-                        double costPrice = double.Parse(splitted[2]);
-                        string costLocation = splitted[3];
-                        string costDateTimeStamp = splitted[4];
-                        Cost readCost = new Cost(costDescription,costPrice,costLocation, costDateTimeStamp);
-                        trip.Costs.Add(readCost);
-
-                    }else if(trackingType == "Note"){
-                        string noteName = splitted[1];
-                        string noteDescription = splitted[2];
-                        string noteSource = splitted[3];
-                        string noteDateTimeStamp = splitted[4];
-                        Note readNote = new Note(noteName,noteDescription,noteSource, noteDateTimeStamp);
-                        trip.Notes.Add(readNote);
-                    }
-                }
-            }
-        }
+        ReadSavedTrips();
+        ReadTripData();
     }
 
     public void SyncTrips(List<Trip>Trips){
@@ -176,4 +135,52 @@ public class Datamanager{
         }
     }
 
+    public void ReadSavedTrips(){
+        if(File.Exists("trips.txt")){
+            var tripsFileContent = File.ReadAllLines("trips.txt");
+            foreach(var tripName in tripsFileContent){
+                Trips.Add(new Trip(tripName));
+            }
+        }
+    }
+
+    public void ReadTripData(){
+        foreach(Trip trip in Trips){
+            string fileName = trip.Name + ".txt";
+            if (File.Exists(fileName))
+            {
+                var fileData = File.ReadAllLines(fileName);
+                foreach(var line in fileData)
+                {
+                    var splitted = line.Split(",",StringSplitOptions.RemoveEmptyEntries);
+                    string trackingType = splitted[0];
+                    
+                    if(trackingType == "Photo"){
+                        string photoName = splitted[1];
+                        string photoLocation = splitted[2];
+                        string photoTimeOfDay = splitted[3];
+                        string photoDateTimeStamp = splitted[4];
+                        Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay,photoDateTimeStamp);
+                        trip.Photos.Add(readPhoto);
+
+                    }else if(trackingType == "Cost"){
+                        string costDescription = splitted[1];
+                        double costPrice = double.Parse(splitted[2]);
+                        string costLocation = splitted[3];
+                        string costDateTimeStamp = splitted[4];
+                        Cost readCost = new Cost(costDescription,costPrice,costLocation, costDateTimeStamp);
+                        trip.Costs.Add(readCost);
+
+                    }else if(trackingType == "Note"){
+                        string noteName = splitted[1];
+                        string noteDescription = splitted[2];
+                        string noteSource = splitted[3];
+                        string noteDateTimeStamp = splitted[4];
+                        Note readNote = new Note(noteName,noteDescription,noteSource, noteDateTimeStamp);
+                        trip.Notes.Add(readNote);
+                    }
+                }
+            }
+        }
+    }
 }
