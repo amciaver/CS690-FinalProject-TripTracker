@@ -8,55 +8,10 @@ class Program
 {
     static void Main(string[] args)
     {   
+        Datamanager datamanager = new Datamanager();
         Console.WriteLine(Environment.NewLine + "Welcome to the TripTracker Application!");
-        List<Trip> Trips = new List<Trip>();
-        
 
-        if(File.Exists("trips.txt")){
-            var tripsFileContent = File.ReadAllLines("trips.txt");
-            foreach(var tripName in tripsFileContent){
-                Trips.Add(new Trip(tripName));
-            }
-        };
-
-        foreach(Trip trip in Trips){
-            string fileName = trip.Name + ".txt";
-            if (File.Exists(fileName))
-            {
-                var fileData = File.ReadAllLines(fileName);
-                foreach(var line in fileData)
-                {
-                    var splitted = line.Split(",",StringSplitOptions.RemoveEmptyEntries);
-                    string trackingType = splitted[0];
-                    if(trackingType == "Photo")
-                    {
-                        string photoName = splitted[1];
-                        string photoLocation = splitted[2];
-                        string photoTimeOfDay = splitted[3];
-                        string photoDateTimeStamp = splitted[4];
-                        Photo readPhoto = new Photo(photoName,photoLocation,photoTimeOfDay,photoDateTimeStamp);
-                        trip.Photos.Add(readPhoto);
-                    }else if(trackingType == "Cost")
-                    {
-                        string costDescription = splitted[1];
-                        double costPrice = double.Parse(splitted[2]);
-                        string costLocation = splitted[3];
-                        string costDateTimeStamp = splitted[4];
-                        Cost readCost = new Cost(costDescription,costPrice,costLocation, costDateTimeStamp);
-                        trip.Costs.Add(readCost);
-                    }else if(trackingType == "Note")
-                    {
-                        string noteName = splitted[1];
-                        string noteDescription = splitted[2];
-                        string noteSource = splitted[3];
-                        string noteDateTimeStamp = splitted[4];
-                        Note readNote = new Note(noteName,noteDescription,noteSource, noteDateTimeStamp);
-                        trip.Notes.Add(readNote);
-                    }
-                }
-            }
-        }
-        List<string> tripSelectChoices = Trips.ConvertAll(t => t.Name);
+        List<string> tripSelectChoices = datamanager.Trips.ConvertAll(t => t.Name);
         tripSelectChoices.Add("Enter New Trip");
         tripSelectChoices.Add("Exit Application");
         
@@ -78,8 +33,8 @@ class Program
                 tripSelectChoices.Add("Exit Application");
 
                 Trip newTripName = new Trip(tripName);
-                Trips.Add(newTripName);
-                SyncTrips(Trips);
+                datamanager.Trips.Add(newTripName);
+                datamanager.SyncTrips(datamanager.Trips);
                 selectedTrip = tripName;
                 }
             }
@@ -90,24 +45,24 @@ class Program
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
                     List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost", "Return To Home Menu"};
-                    trackEntryCommand = AskForSelection("Please select an action", trackEntryCommandChoices);
+                    trackEntryCommand = AskForSelection("Please select an action:", trackEntryCommandChoices);
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
                     if(trackEntryCommand == "Track Photo"){
-                        
+            
                         string photoName = AskForTrackItemString("Please enter the photo name:");
                         string photoLocation = AskForTrackItemString("Please enter the photo location");
                         List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
                         string photoTime = AskForSelection("Please select the time of day the photo was taken:", timeOfDayChoices);
                         string photoDateTimeStamp = DateTime.Now.ToString();
                         Photo newPhoto = new Photo(photoName, photoLocation, photoTime, photoDateTimeStamp);
-                        foreach(Trip trip in Trips)
+                        foreach(Trip trip in datamanager.Trips)
                         {
                             if(selectedTrip == trip.Name)
                             {
                                 trip.Photos.Add(newPhoto);
                                 string tripFileName = selectedTrip + ".txt";
-                                SyncTripData(selectedTrip,Trips);
+                                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
                             }
                         }
                     }else if(trackEntryCommand == "Track Cost"){
@@ -126,13 +81,13 @@ class Program
                         string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
                         string costDateTimeStamp = DateTime.Now.ToString();
                         Cost newCost = new Cost(costDescription, costPrice, costLocation, costDateTimeStamp);
-                        foreach(Trip trip in Trips)
+                        foreach(Trip trip in datamanager.Trips)
                         {
                             if(selectedTrip == trip.Name)
                             {
                                 trip.Costs.Add(newCost);
                                 string tripFileName = selectedTrip + ".txt";
-                                SyncTripData(selectedTrip,Trips);
+                                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
                             }
                         }
                     }else if(trackEntryCommand == "Track Note"){
@@ -142,17 +97,17 @@ class Program
                         string noteSource = AskForTrackItemString(Environment.NewLine + "Please enter the source of the information: ");
                         string noteDateTimeStamp = DateTime.Now.ToString();
                         Note newNote = new Note(noteName, noteDescription, noteSource, noteDateTimeStamp);
-                        foreach(Trip trip in Trips)
+                        foreach(Trip trip in datamanager.Trips)
                         {
                             if(selectedTrip == trip.Name)
                             {
                                 trip.Notes.Add(newNote);
                                 string tripFileName = selectedTrip + ".txt";
-                                SyncTripData(selectedTrip,Trips);
+                                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
                             }
                         }
                     }else if(trackEntryCommand == "Display Trip Records"){
-                        foreach (Trip trip in Trips){
+                        foreach (Trip trip in datamanager.Trips){
                             if(selectedTrip == trip.Name){
                                 
                                 if(trip.Photos.Count == 0){
@@ -200,7 +155,7 @@ class Program
                             }
                         }
                     }else if(trackEntryCommand == "Total Trip Cost"){
-                        foreach (Trip trip in Trips){
+                        foreach (Trip trip in datamanager.Trips){
                             if(selectedTrip == trip.Name){
                                 double tripCostSum = 0;
                                 foreach(var cost in trip.Costs)
@@ -246,38 +201,5 @@ class Program
             .Title(message)
             .AddChoices(choices));
     }
-
-    public static void SyncTrips(List<Trip>Trips)
-    {
-        File.Delete("trips.txt");
-        foreach(Trip enteredTrip in Trips)
-        {
-            File.AppendAllText("trips.txt", enteredTrip + Environment.NewLine);
-        }
-        Console.WriteLine("Trips have been synchronized to the text file");
-    }
-
-    public static void SyncTripData(string targetTrip, List<Trip>Trips)
-    {
-        foreach (Trip trip in Trips){
-            if (trip.Name == targetTrip){
-                string fileName = trip.Name + ".txt";
-                File.Delete(fileName);
-                foreach (Photo photo in trip.Photos){
-                    File.AppendAllText(fileName,"Photo," + photo.Name + "," + photo.Location + "," + photo.TimeOfDay + "," + photo.DateTimeStamp + Environment.NewLine);
-                }
-                Console.WriteLine("Photos Synced for: " + trip.Name);
-
-                foreach (Cost cost in trip.Costs){
-                    File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + "," + cost.DateTimeStamp + Environment.NewLine);
-                }
-                Console.WriteLine("Costs Synced for: " + trip.Name);
-                
-                foreach (Note note in trip.Notes){
-                    File.AppendAllText(fileName,"Note," + note.Name + "," + note.Description + "," + note.Source + "," + note.DateTimeStamp + Environment.NewLine);
-                }
-                Console.WriteLine("Notes Synced for: " + trip.Name);
-            }
-        }
-    }
+ 
 }
