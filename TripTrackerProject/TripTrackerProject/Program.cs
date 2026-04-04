@@ -8,8 +8,8 @@ class Program
 {
     static void Main(string[] args)
     {   
-        Datamanager datamanager = new Datamanager();
         Console.WriteLine(Environment.NewLine + "Welcome to the TripTracker Application!");
+        Datamanager datamanager = new Datamanager();
 
         List<string> tripSelectChoices = datamanager.Trips.ConvertAll(t => t.Name);
         tripSelectChoices.Add("Enter New Trip");
@@ -17,12 +17,12 @@ class Program
         
         string selectedTrip;
         do{    
-            selectedTrip = AskForSelection("Please select a Trip", tripSelectChoices);
+            selectedTrip = Datamanager.AskForSelection("Please select a Trip", tripSelectChoices);
             Console.WriteLine("You have selected: " + selectedTrip);
             
             string tripName;
             if(selectedTrip == "Enter New Trip"){
-                tripName = AskForInput("Enter new trip name: ");
+                tripName = Datamanager.AskForInput("Enter new trip name: ");
                 if(tripSelectChoices.Contains(tripName)){
                     Console.WriteLine("Trip already exists!");
                 }else{
@@ -45,20 +45,20 @@ class Program
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
                     List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost", "Return To Home Menu"};
-                    trackEntryCommand = AskForSelection("Please select an action:", trackEntryCommandChoices);
+                    trackEntryCommand = Datamanager.AskForSelection("Please select an action:", trackEntryCommandChoices);
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
                     if(trackEntryCommand == "Track Photo"){
 
-                        TrackPhoto(datamanager, selectedTrip);
+                        Datamanager.TrackPhoto(datamanager, selectedTrip);
 
                     }else if(trackEntryCommand == "Track Cost"){
 
-                        TrackCost(datamanager, selectedTrip);
+                        Datamanager.TrackCost(datamanager, selectedTrip);
                     
                     }else if(trackEntryCommand == "Track Note"){
                         
-                        TrackNote(datamanager, selectedTrip);
+                        Datamanager.TrackNote(datamanager, selectedTrip);
     
                     }else if(trackEntryCommand == "Display Trip Records"){
                         foreach (Trip trip in datamanager.Trips){
@@ -124,90 +124,5 @@ class Program
         }while(selectedTrip != "Exit Application");
     }
 
-    public static string AskForInput(string message){
-        string? input;
-        do{
-            Console.WriteLine(message);
-            input = Console.ReadLine();
-            if(string.IsNullOrEmpty(input)){
-                Console.WriteLine("Please enter an input.");
-            }
-
-        }while(string.IsNullOrEmpty(input));
-        return input;
-    }
-
-    public static string AskForTrackItemString(string message){
-        string itemAttribute;
-        do{
-            itemAttribute = AskForInput(message);
-            if(itemAttribute.Contains(",")){
-                Console.WriteLine("Input cannot contain ',' characters!");
-            }
-        }while(itemAttribute.Contains(","));
-        return itemAttribute;
-    }
-
-    public static string AskForSelection(string message, List<string> choices){
-        return AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-            .Title(message)
-            .AddChoices(choices));
-    }
-    public static void TrackPhoto(Datamanager datamanager, string selectedTrip){
-        string photoName = AskForTrackItemString("Please enter the photo name:");
-        string photoLocation = AskForTrackItemString("Please enter the photo location");
-        List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
-        string photoTime = AskForSelection("Please select the time of day the photo was taken:", timeOfDayChoices);
-        string photoDateTimeStamp = DateTime.Now.ToString();
-        Photo newPhoto = new Photo(photoName, photoLocation, photoTime, photoDateTimeStamp);
-        foreach(Trip trip in datamanager.Trips){
-            if(selectedTrip == trip.Name){
-                trip.Photos.Add(newPhoto);
-                string tripFileName = selectedTrip + ".txt";
-                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
-            }
-        }
-    }
-
-    public static void TrackCost(Datamanager datamanager, string selectedTrip){
-        
-        string costDescription = AskForTrackItemString("Please enter a description: ");
-        double costPrice;
-        while (true){
-            string input = AskForInput(Environment.NewLine + "Please enter the price: ");
-            if(double.TryParse(input, out costPrice)){
-                break;
-            }
-            Console.WriteLine("Invalid Input. Please enter a number.");
-            
-        }
-
-        string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
-        string costDateTimeStamp = DateTime.Now.ToString();
-        Cost newCost = new Cost(costDescription, costPrice, costLocation, costDateTimeStamp);
-        foreach(Trip trip in datamanager.Trips){
-            if(selectedTrip == trip.Name){
-                trip.Costs.Add(newCost);
-                string tripFileName = selectedTrip + ".txt";
-                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
-            }
-        }
-    }
-
-    public static void TrackNote(Datamanager datamanager, string selectedTrip){
-        
-        string noteName = AskForTrackItemString("Please enter the name of the note: ");
-        string noteDescription = AskForTrackItemString(Environment.NewLine + "Please enter a description");
-        string noteSource = AskForTrackItemString(Environment.NewLine + "Please enter the source of the information: ");
-        string noteDateTimeStamp = DateTime.Now.ToString();
-        Note newNote = new Note(noteName, noteDescription, noteSource, noteDateTimeStamp);
-        foreach(Trip trip in datamanager.Trips){
-            if(selectedTrip == trip.Name){
-                trip.Notes.Add(newNote);
-                string tripFileName = selectedTrip + ".txt";
-                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
-            }
-        }
-    }
+    
 }
