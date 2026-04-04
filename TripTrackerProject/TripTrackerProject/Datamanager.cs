@@ -88,4 +88,92 @@ public class Datamanager{
             }
         }
     }
+
+    public static string AskForInput(string message){
+        string? input;
+        do{
+            Console.WriteLine(message);
+            input = Console.ReadLine();
+            if(string.IsNullOrEmpty(input)){
+                Console.WriteLine("Please enter an input.");
+            }
+
+        }while(string.IsNullOrEmpty(input));
+        return input;
+    }
+
+    public static string AskForTrackItemString(string message){
+        string itemAttribute;
+        do{
+            itemAttribute = AskForInput(message);
+            if(itemAttribute.Contains(",")){
+                Console.WriteLine("Input cannot contain ',' characters!");
+            }
+        }while(itemAttribute.Contains(","));
+        return itemAttribute;
+    }
+
+    public static string AskForSelection(string message, List<string> choices){
+        return AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title(message)
+            .AddChoices(choices));
+    }
+    public static void TrackPhoto(Datamanager datamanager, string selectedTrip){
+        string photoName = AskForTrackItemString("Please enter the photo name:");
+        string photoLocation = AskForTrackItemString("Please enter the photo location");
+        List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
+        string photoTime = AskForSelection("Please select the time of day the photo was taken:", timeOfDayChoices);
+        string photoDateTimeStamp = DateTime.Now.ToString();
+        Photo newPhoto = new Photo(photoName, photoLocation, photoTime, photoDateTimeStamp);
+        foreach(Trip trip in datamanager.Trips){
+            if(selectedTrip == trip.Name){
+                trip.Photos.Add(newPhoto);
+                string tripFileName = selectedTrip + ".txt";
+                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
+            }
+        }
+    }
+
+    public static void TrackCost(Datamanager datamanager, string selectedTrip){
+        
+        string costDescription = AskForTrackItemString("Please enter a description: ");
+        double costPrice;
+        while (true){
+            string input = AskForInput(Environment.NewLine + "Please enter the price: ");
+            if(double.TryParse(input, out costPrice)){
+                break;
+            }
+            Console.WriteLine("Invalid Input. Please enter a number.");
+            
+        }
+
+        string costLocation = AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
+        string costDateTimeStamp = DateTime.Now.ToString();
+        Cost newCost = new Cost(costDescription, costPrice, costLocation, costDateTimeStamp);
+        foreach(Trip trip in datamanager.Trips){
+            if(selectedTrip == trip.Name){
+                trip.Costs.Add(newCost);
+                string tripFileName = selectedTrip + ".txt";
+                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
+            }
+        }
+    }
+
+    public static void TrackNote(Datamanager datamanager, string selectedTrip){
+        
+        string noteName = AskForTrackItemString("Please enter the name of the note: ");
+        string noteDescription = AskForTrackItemString(Environment.NewLine + "Please enter a description");
+        string noteSource = AskForTrackItemString(Environment.NewLine + "Please enter the source of the information: ");
+        string noteDateTimeStamp = DateTime.Now.ToString();
+        Note newNote = new Note(noteName, noteDescription, noteSource, noteDateTimeStamp);
+        foreach(Trip trip in datamanager.Trips){
+            if(selectedTrip == trip.Name){
+                trip.Notes.Add(newNote);
+                string tripFileName = selectedTrip + ".txt";
+                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
+            }
+        }
+    }
+
 }
