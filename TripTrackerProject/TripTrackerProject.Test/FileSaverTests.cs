@@ -3,7 +3,7 @@
 using TripTrackerProject;
 using Xunit.Sdk;
 
-public class DatamanagerTests{
+public class FileSaverTests{
 
 
     [Fact]
@@ -13,9 +13,9 @@ public class DatamanagerTests{
         testTrip.Notes.Add(new Note("Disney", "Disney is big", "Google Maps", "20260404")); 
         
         var tripsList = new List<Trip> {testTrip};
-        var manager = new Datamanager();
+        var fileSaver = new FileSaver();
         string expectedFileName = "Florida 2025.txt";
-        manager.SyncTripData("Florida 2025", tripsList);
+        fileSaver.SyncTripData("Florida 2025", tripsList);
         string fileContent = File.ReadAllText(expectedFileName);
 
         Assert.True(File.Exists(expectedFileName));

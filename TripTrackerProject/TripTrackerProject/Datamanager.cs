@@ -6,6 +6,7 @@ using System.IO;
 
 public class Datamanager{
 
+    FileSaver fileSaver = new FileSaver();
     public List <Trip> Trips {get;}
 
     public Datamanager(){
@@ -16,37 +17,7 @@ public class Datamanager{
         ReadTripData();
     }
 
-    public void SyncTrips(List<Trip>Trips){
-        File.Delete("trips.txt");
-        foreach(Trip enteredTrip in Trips)
-        {
-            File.AppendAllText("trips.txt", enteredTrip + Environment.NewLine);
-        }
-        Console.WriteLine("Trips have been synchronized to the text file");
-    }
 
-    public void SyncTripData(string targetTrip, List<Trip>Trips){
-        foreach (Trip trip in Trips){
-            if (trip.Name == targetTrip){
-                string fileName = trip.Name + ".txt";
-                File.Delete(fileName);
-                foreach (Photo photo in trip.Photos){
-                    File.AppendAllText(fileName,"Photo," + photo.Name + "," + photo.Location + "," + photo.TimeOfDay + "," + photo.DateTimeStamp + Environment.NewLine);
-                }
-                Console.WriteLine("Photos Synced for: " + trip.Name);
-
-                foreach (Cost cost in trip.Costs){
-                    File.AppendAllText(fileName,"Cost," + cost.Description + "," + cost.Price + "," + cost.Location + "," + cost.DateTimeStamp + Environment.NewLine);
-                }
-                Console.WriteLine("Costs Synced for: " + trip.Name);
-                
-                foreach (Note note in trip.Notes){
-                    File.AppendAllText(fileName,"Note," + note.Name + "," + note.Description + "," + note.Source + "," + note.DateTimeStamp + Environment.NewLine);
-                }
-                Console.WriteLine("Notes Synced for: " + trip.Name);
-            }
-        }
-    }
 
     public static string AskForInput(string message){
         string? input;
@@ -78,7 +49,7 @@ public class Datamanager{
             .Title(message)
             .AddChoices(choices));
     }
-    public static void TrackPhoto(Datamanager datamanager, string selectedTrip){
+    public void TrackPhoto(Datamanager datamanager, string selectedTrip){
         string photoName = AskForTrackItemString("Please enter the photo name:");
         string photoLocation = AskForTrackItemString("Please enter the photo location");
         List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
@@ -89,12 +60,12 @@ public class Datamanager{
             if(selectedTrip == trip.Name){
                 trip.Photos.Add(newPhoto);
                 string tripFileName = selectedTrip + ".txt";
-                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
+                fileSaver.SyncTripData(selectedTrip,datamanager.Trips);
             }
         }
     }
 
-    public static void TrackCost(Datamanager datamanager, string selectedTrip){
+    public void TrackCost(Datamanager datamanager, string selectedTrip){
         
         string costDescription = AskForTrackItemString("Please enter a description: ");
         double costPrice;
@@ -114,12 +85,12 @@ public class Datamanager{
             if(selectedTrip == trip.Name){
                 trip.Costs.Add(newCost);
                 string tripFileName = selectedTrip + ".txt";
-                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
+                fileSaver.SyncTripData(selectedTrip,datamanager.Trips);
             }
         }
     }
 
-    public static void TrackNote(Datamanager datamanager, string selectedTrip){
+    public void TrackNote(Datamanager datamanager, string selectedTrip){
         
         string noteName = AskForTrackItemString("Please enter the name of the note: ");
         string noteDescription = AskForTrackItemString(Environment.NewLine + "Please enter a description");
@@ -130,7 +101,7 @@ public class Datamanager{
             if(selectedTrip == trip.Name){
                 trip.Notes.Add(newNote);
                 string tripFileName = selectedTrip + ".txt";
-                datamanager.SyncTripData(selectedTrip,datamanager.Trips);
+                fileSaver.SyncTripData(selectedTrip,datamanager.Trips);
             }
         }
     }

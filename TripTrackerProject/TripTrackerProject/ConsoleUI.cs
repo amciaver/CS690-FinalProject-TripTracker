@@ -8,10 +8,12 @@ public class ConsoleUI {
     Datamanager datamanager;
     Reporter reporter;
 
+    FileSaver fileSaver;
+
     public ConsoleUI() {
         datamanager = new Datamanager();
         reporter = new Reporter();
-
+        fileSaver = new FileSaver();
     }
 
     public void Show() {
@@ -39,7 +41,7 @@ public class ConsoleUI {
 
                 Trip newTripName = new Trip(tripName);
                 datamanager.Trips.Add(newTripName);
-                datamanager.SyncTrips(datamanager.Trips);
+                fileSaver.SyncTrips(datamanager.Trips);
                 selectedTrip = tripName;
                 }
             }
@@ -55,15 +57,15 @@ public class ConsoleUI {
                     
                     if(trackEntryCommand == "Track Photo"){
 
-                        Datamanager.TrackPhoto(datamanager, selectedTrip);
+                        datamanager.TrackPhoto(datamanager, selectedTrip);
 
                     }else if(trackEntryCommand == "Track Cost"){
 
-                        Datamanager.TrackCost(datamanager, selectedTrip);
+                        datamanager.TrackCost(datamanager, selectedTrip);
                     
                     }else if(trackEntryCommand == "Track Note"){
                         
-                        Datamanager.TrackNote(datamanager, selectedTrip);
+                        datamanager.TrackNote(datamanager, selectedTrip);
 
                     }else if(trackEntryCommand == "Display Trip Records"){
 
