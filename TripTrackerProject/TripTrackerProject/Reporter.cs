@@ -56,15 +56,16 @@ public class Reporter{
         }
     }
 
-    public void TotalTripCost(Datamanager datamanager, string selectedTrip){
+    public double TotalTripCost(Datamanager datamanager, string selectedTrip){
+        double tripCostSum = 0;
         foreach (Trip trip in datamanager.Trips){
             if(selectedTrip == trip.Name){
-                double tripCostSum = 0;
                 foreach(var cost in trip.Costs){
                     tripCostSum += cost.Price;
                 }
                 Console.WriteLine("Total trip cost is: $" + tripCostSum.ToString("N2"));
             }
         }
+        return tripCostSum;
     }
 }
