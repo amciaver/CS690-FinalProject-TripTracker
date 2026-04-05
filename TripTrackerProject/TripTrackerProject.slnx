@@ -1,2 +1,4 @@
 <Solution>
+  <Project Path="TripTrackerProject.Test/TripTrackerProject.Test.csproj" />
+  <Project Path="TripTrackerProject/TripTrackerProject.csproj" />
 </Solution>
