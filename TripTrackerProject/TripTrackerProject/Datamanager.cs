@@ -108,6 +108,7 @@ public class Datamanager{
 
     public void ReadSavedTrips(){
         if(File.Exists("trips.txt")){
+            Trips.Clear();
             var tripsFileContent = File.ReadAllLines("trips.txt");
             foreach(var tripName in tripsFileContent){
                 Trips.Add(new Trip(tripName));
@@ -118,8 +119,7 @@ public class Datamanager{
     public void ReadTripData(){
         foreach(Trip trip in Trips){
             string fileName = trip.Name + ".txt";
-            if (File.Exists(fileName))
-            {
+            if (File.Exists(fileName)){
                 var fileData = File.ReadAllLines(fileName);
                 foreach(var line in fileData)
                 {
