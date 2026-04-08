@@ -6,6 +6,8 @@ using System.IO;
 
 public class Datamanager{
 
+    public IAnsiConsole testConsole { get; set; } = AnsiConsole.Console;
+
     FileSaver fileSaver = new FileSaver();
     public List <Trip> Trips {get;}
 
@@ -19,7 +21,7 @@ public class Datamanager{
 
 
 
-    public static string AskForInput(string message){
+    public string AskForInput(string message){
         string? input;
         do{
             Console.WriteLine(message);
@@ -32,7 +34,7 @@ public class Datamanager{
         return input;
     }
 
-    public static string AskForTrackItemString(string message){
+    public string AskForTrackItemString(string message){
         string itemAttribute;
         do{
             itemAttribute = AskForInput(message);
@@ -43,7 +45,7 @@ public class Datamanager{
         return itemAttribute;
     }
 
-    public static string AskForSelection(string message, List<string> choices){
+    public string AskForSelection(string message, List<string> choices){
         return AnsiConsole.Prompt(
             new SelectionPrompt<string>()
             .Title(message)
