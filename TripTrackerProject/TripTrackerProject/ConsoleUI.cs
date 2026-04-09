@@ -24,12 +24,12 @@ public class ConsoleUI {
 
         string selectedTrip;
         do{    
-            selectedTrip = Datamanager.AskForSelection("Please select a Trip", tripSelectChoices);
+            selectedTrip = datamanager.AskForSelection("Please select a Trip", tripSelectChoices);
             Console.WriteLine("You have selected: " + selectedTrip);
             
             string tripName;
             if(selectedTrip == "Enter New Trip"){
-                tripName = Datamanager.AskForInput("Enter new trip name: ");
+                tripName = datamanager.AskForInput("Enter new trip name: ");
                 if(tripSelectChoices.Contains(tripName)){
                     Console.WriteLine("Trip already exists!");
                 }else{
@@ -52,7 +52,7 @@ public class ConsoleUI {
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
                     List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost", "Return To Home Menu"};
-                    trackEntryCommand = Datamanager.AskForSelection("Please select an action:", trackEntryCommandChoices);
+                    trackEntryCommand = datamanager.AskForSelection("Please select an action:", trackEntryCommandChoices);
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
                     if(trackEntryCommand == "Track Photo"){
