@@ -6,7 +6,7 @@ using System.IO;
 
 public class Datamanager{
 
-    public IAnsiConsole testConsole { get; set; } = AnsiConsole.Console;
+    public IAnsiConsole iAnsi { get; set; } = AnsiConsole.Console;
 
     FileSaver fileSaver = new FileSaver();
     public List <Trip> Trips {get;}
@@ -46,7 +46,7 @@ public class Datamanager{
     }
 
     public string AskForSelection(string message, List<string> choices){
-        return AnsiConsole.Prompt(
+        return iAnsi.Prompt(
             new SelectionPrompt<string>()
             .Title(message)
             .AddChoices(choices));
