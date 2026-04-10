@@ -7,7 +7,7 @@ using System.IO;
 public class ConsoleUI {
     Datamanager datamanager;
     Reporter reporter;
-
+    public IAnsiConsole consoleAnsi{ get; set; } = AnsiConsole.Console;
     FileSaver fileSaver;
 
     public ConsoleUI() {
@@ -24,12 +24,12 @@ public class ConsoleUI {
 
         string selectedTrip;
         do{    
-            selectedTrip = datamanager.AskForSelection("Please select a Trip", tripSelectChoices);
+            selectedTrip = AskForSelection("Please select a Trip", tripSelectChoices);
             Console.WriteLine("You have selected: " + selectedTrip);
             
             string tripName;
             if(selectedTrip == "Enter New Trip"){
-                tripName = datamanager.AskForInput("Enter new trip name: ");
+                tripName = AskForInput("Enter new trip name: ");
                 if(tripSelectChoices.Contains(tripName)){
                     Console.WriteLine("Trip already exists!");
                 }else{
@@ -52,7 +52,7 @@ public class ConsoleUI {
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
                     List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost", "Return To Home Menu"};
-                    trackEntryCommand = datamanager.AskForSelection("Please select an action:", trackEntryCommandChoices);
+                    trackEntryCommand = AskForSelection("Please select an action:", trackEntryCommandChoices);
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
                     if(trackEntryCommand == "Track Photo"){
@@ -79,5 +79,35 @@ public class ConsoleUI {
                 }while (trackEntryCommand!= "Return To Home Menu");
             }
         }while(selectedTrip != "Exit Application");
+    }
+    public string AskForInput(string message){
+    string? input;
+    do{
+        Console.WriteLine(message);
+        input = Console.ReadLine();
+        if(string.IsNullOrEmpty(input)){
+            Console.WriteLine("Please enter an input.");
+        }
+
+    }while(string.IsNullOrEmpty(input));
+    return input;
+    }
+
+    public string AskForTrackItemString(string message){
+        string itemAttribute;
+        do{
+            itemAttribute = AskForInput(message);
+            if(itemAttribute.Contains(",")){
+                Console.WriteLine("Input cannot contain ',' characters!");
+            }
+        }while(itemAttribute.Contains(","));
+        return itemAttribute;
+    }
+
+    public string AskForSelection(string message, List<string> choices){
+        return consoleAnsi.Prompt(
+            new SelectionPrompt<string>()
+            .Title(message)
+            .AddChoices(choices));
     }
 }
