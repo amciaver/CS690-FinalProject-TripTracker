@@ -57,15 +57,15 @@ public class ConsoleUI {
                     
                     if(trackEntryCommand == "Track Photo"){
 
-                        datamanager.TrackPhoto(datamanager, selectedTrip);
+                        datamanager.TrackPhoto(this, selectedTrip);
 
                     }else if(trackEntryCommand == "Track Cost"){
 
-                        datamanager.TrackCost(datamanager, selectedTrip);
+                        datamanager.TrackCost(this, selectedTrip);
                     
                     }else if(trackEntryCommand == "Track Note"){
                         
-                        datamanager.TrackNote(datamanager, selectedTrip);
+                        datamanager.TrackNote(this, selectedTrip);
 
                     }else if(trackEntryCommand == "Display Trip Records"){
 
