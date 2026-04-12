@@ -125,7 +125,7 @@ public class Datamanager{
         }
     }
 
-    public void DeleteTrackedEntry(ConsoleUI consoleUI, string selectedTrip){
+    public void DeleteTrackedEntry(string selectedTrip){
         foreach(Trip trip in Trips){
             if(selectedTrip == trip.Name){
                 
@@ -138,48 +138,39 @@ public class Datamanager{
                 foreach(Photo photo in trip.Photos){
                     entryNumber += 1;
                     photoCount +=1;
-                    Console.WriteLine($"Entry {entryNumber}: Photo[{photoCount}]");
-                    entries.Add(entryNumber,$",photo,{photoCount}");
+                    entries.Add(entryNumber,$"photo,{photoCount}");
                     Console.WriteLine($"Entry {entryNumber}) {photo.Name},{photo.Location},{photo.TimeOfDay},{photo.DateTimeStamp}");
                 }
 
                 foreach(Cost cost in trip.Costs){
                     entryNumber += 1;
-                    costCount += 1;
-                    Console.WriteLine($"Entry {entryNumber}: Cost[{costCount}]");
-                    entries.Add(entryNumber,$",cost,{costCount}");
+                    costCount += 1;               
+                    entries.Add(entryNumber,$"cost,{costCount}");
                     Console.WriteLine($"Entry {entryNumber}) {cost.Description},{cost.Price},{cost.Location},{cost.DateTimeStamp}");
                 }   
 
                 foreach(Note note in trip.Notes){
                     entryNumber += 1;
                     noteCount += 1;
-                    Console.WriteLine($"Entry {entryNumber}: Note[{noteCount}]");
-                    entries.Add(entryNumber,$",note,{noteCount}");
+                    entries.Add(entryNumber,$"note,{noteCount}");
                     Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
                 }
-                foreach( var( key, value) in entries){
-                    Console.WriteLine(Environment.NewLine + "Keys/Values");
-                    Console.WriteLine(key  + value);
-                }
 
-                int input = int.Parse(Console.ReadLine());
-                Console.WriteLine("Int = " + input);
-                Console.WriteLine($"entries input {entries[input]}");
+                Console.WriteLine("Please enter the entry number to delete: ");
+                int input = int.Parse(Console.ReadLine()); //make separate function to check int later
                 string deleteEntry = entries[input];
-                Console.WriteLine("delete entry " + deleteEntry);
                 var splitDeleteEntry = deleteEntry.Split(",");
-                var itemType = splitDeleteEntry[1];
-                int itemIndex = int.Parse(splitDeleteEntry[2]);
+                string itemType = splitDeleteEntry[0];
+                int itemIndex = int.Parse(splitDeleteEntry[1]);
                 
-                Console.WriteLine("itemType" + itemType);
-                Console.WriteLine("itemIndex" + itemIndex);
-                trip.Costs.RemoveAt(itemIndex);
-                foreach(Cost cost in trip.Costs){
-                    Console.WriteLine("cost descriptions: " + cost.Description);
+                if(itemType == "photo"){
+                    trip.Photos.RemoveAt(itemIndex);
+                }else if(itemType == "cost"){
+                    trip.Costs.RemoveAt(itemIndex);
+                }else if (itemType == "note"){
+                    trip.Notes.RemoveAt(itemIndex);
                 }
                 fileSaver.SyncTripData(selectedTrip, Trips);
-                //Trips.Remove(Trips[0].Photos[0]);
             }
         }
     }

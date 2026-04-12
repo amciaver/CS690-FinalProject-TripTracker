@@ -76,7 +76,7 @@ public class ConsoleUI {
                         reporter.TotalTripCost(datamanager, selectedTrip);
 
                     }else if(trackEntryCommand == "Delete Tracked Entry"){
-                        datamanager.DeleteTrackedEntry(this, selectedTrip);
+                        datamanager.DeleteTrackedEntry(selectedTrip);
                     }
                 }while (trackEntryCommand!= "Return To Home Menu");
             }
