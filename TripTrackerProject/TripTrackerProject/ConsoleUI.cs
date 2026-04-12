@@ -51,7 +51,7 @@ public class ConsoleUI {
                 do{
                     Console.WriteLine(Environment.NewLine + "Selected Trip = " + selectedTrip);
                     
-                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost", "Return To Home Menu"};
+                    List<string> trackEntryCommandChoices = new List <string> {"Track Photo", "Track Cost","Track Note", "Display Trip Records", "Total Trip Cost","Delete Tracked Entry", "Return To Home Menu"};
                     trackEntryCommand = AskForSelection("Please select an action:", trackEntryCommandChoices);
                     Console.WriteLine(Environment.NewLine + "Selected Action = " + trackEntryCommand);
                     
@@ -75,6 +75,8 @@ public class ConsoleUI {
                         
                         reporter.TotalTripCost(datamanager, selectedTrip);
 
+                    }else if(trackEntryCommand == "Delete Tracked Entry"){
+                        datamanager.DeleteTrackedEntry(this, selectedTrip);
                     }
                 }while (trackEntryCommand!= "Return To Home Menu");
             }
