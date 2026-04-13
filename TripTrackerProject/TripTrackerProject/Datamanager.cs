@@ -125,7 +125,7 @@ public class Datamanager{
         }
     }
 
-    public void DeleteTrackedEntry(string selectedTrip){
+    public void DeleteTrackedEntry(ConsoleUI consoleUI, string selectedTrip){
         foreach(Trip trip in Trips){
             if(selectedTrip == trip.Name){
                 
@@ -155,22 +155,27 @@ public class Datamanager{
                     entries.Add(entryNumber,$"note,{noteCount}");
                     Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
                 }
-
-                Console.WriteLine("Please enter the entry number to delete: ");
-                int input = int.Parse(Console.ReadLine()); //make separate function to check int later
-                string deleteEntry = entries[input];
-                var splitDeleteEntry = deleteEntry.Split(",");
-                string itemType = splitDeleteEntry[0];
-                int itemIndex = int.Parse(splitDeleteEntry[1]);
-                
-                if(itemType == "photo"){
-                    trip.Photos.RemoveAt(itemIndex);
-                }else if(itemType == "cost"){
-                    trip.Costs.RemoveAt(itemIndex);
-                }else if (itemType == "note"){
-                    trip.Notes.RemoveAt(itemIndex);
+                if(entries.Count != 0){
+                    //Console.WriteLine("Please enter the entry number to delete: ");
+                   // int input = int.Parse(Console.ReadLine()); //make separate function to check int later
+                    int input = consoleUI.AskForInteger("Please enter the entry number: ");
+                    string deleteEntry = entries[input];
+                    var splitDeleteEntry = deleteEntry.Split(",");
+                    string itemType = splitDeleteEntry[0];
+                    int itemIndex = int.Parse(splitDeleteEntry[1]);
+                    
+                    if(itemType == "photo"){
+                        trip.Photos.RemoveAt(itemIndex);
+                    }else if(itemType == "cost"){
+                        trip.Costs.RemoveAt(itemIndex);
+                    }else if (itemType == "note"){
+                        trip.Notes.RemoveAt(itemIndex);
+                    }
+                    fileSaver.SyncTripData(selectedTrip, Trips);
+                }else{
+                    Console.WriteLine("No entries available to delete!");
+                    break;
                 }
-                fileSaver.SyncTripData(selectedTrip, Trips);
             }
         }
     }

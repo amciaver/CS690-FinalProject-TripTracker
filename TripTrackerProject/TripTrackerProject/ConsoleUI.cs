@@ -76,7 +76,7 @@ public class ConsoleUI {
                         reporter.TotalTripCost(datamanager, selectedTrip);
 
                     }else if(trackEntryCommand == "Delete Tracked Entry"){
-                        datamanager.DeleteTrackedEntry(selectedTrip);
+                        datamanager.DeleteTrackedEntry(this, selectedTrip);
                     }
                 }while (trackEntryCommand!= "Return To Home Menu");
             }
@@ -93,6 +93,20 @@ public class ConsoleUI {
 
     }while(string.IsNullOrEmpty(input));
     return input;
+    }
+
+    public int AskForInteger(string message){
+        int input;
+        string? rawInput;
+        do{
+            Console.WriteLine(message);
+            do{
+                rawInput = Console.ReadLine();
+                
+            }while(string.IsNullOrEmpty(rawInput));
+
+        }while(!int.TryParse(rawInput, out input));
+        return input;
     }
 
     public string AskForTrackItemString(string message){

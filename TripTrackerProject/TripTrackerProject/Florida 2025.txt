@@ -1,5 +1,0 @@
-Photo,Mickey Mouse,Disney,Morning,04/12/2026 13:10:52
-Photo,Mini Mouse,Disney,Morning,04/12/2026 13:10:52
-Cost,Water Bottle,5,Disney,04/12/2026 13:11:07
-Cost,Ice Cream,5,Disney,04/12/2026 13:21:27
-Note,Cindarella Castle,Is over 50 years old. ,Tour Guide,04/12/2026 13:11:34
