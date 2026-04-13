@@ -32,7 +32,6 @@ public class Datamanager{
         foreach(Trip trip in Trips){
             if(selectedTrip == trip.Name){
                 trip.Photos.Add(newPhoto);
-                string tripFileName = selectedTrip + ".txt";
                 fileSaver.SyncTripData(selectedTrip,Trips);
             }
         }
@@ -57,7 +56,6 @@ public class Datamanager{
         foreach(Trip trip in Trips){
             if(selectedTrip == trip.Name){
                 trip.Costs.Add(newCost);
-                string tripFileName = selectedTrip + ".txt";
                 fileSaver.SyncTripData(selectedTrip,Trips);
             }
         }
@@ -73,7 +71,6 @@ public class Datamanager{
         foreach(Trip trip in Trips){
             if(selectedTrip == trip.Name){
                 trip.Notes.Add(newNote);
-                string tripFileName = selectedTrip + ".txt";
                 fileSaver.SyncTripData(selectedTrip,Trips);
             }
         }
@@ -123,6 +120,61 @@ public class Datamanager{
                         Note readNote = new Note(noteName,noteDescription,noteSource, noteDateTimeStamp);
                         trip.Notes.Add(readNote);
                     }
+                }
+            }
+        }
+    }
+
+    public void DeleteTrackedEntry(ConsoleUI consoleUI, string selectedTrip){
+        foreach(Trip trip in Trips){
+            if(selectedTrip == trip.Name){
+                
+                Dictionary<int,string> entries = new Dictionary<int,string>();
+                int entryNumber = 0;
+                int photoCount = -1;
+                int costCount = -1;
+                int noteCount = -1;
+
+                foreach(Photo photo in trip.Photos){
+                    entryNumber += 1;
+                    photoCount +=1;
+                    entries.Add(entryNumber,$"photo,{photoCount}");
+                    Console.WriteLine($"Entry {entryNumber}) {photo.Name},{photo.Location},{photo.TimeOfDay},{photo.DateTimeStamp}");
+                }
+
+                foreach(Cost cost in trip.Costs){
+                    entryNumber += 1;
+                    costCount += 1;               
+                    entries.Add(entryNumber,$"cost,{costCount}");
+                    Console.WriteLine($"Entry {entryNumber}) {cost.Description},{cost.Price},{cost.Location},{cost.DateTimeStamp}");
+                }   
+
+                foreach(Note note in trip.Notes){
+                    entryNumber += 1;
+                    noteCount += 1;
+                    entries.Add(entryNumber,$"note,{noteCount}");
+                    Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
+                }
+                if(entries.Count != 0){
+                    //Console.WriteLine("Please enter the entry number to delete: ");
+                   // int input = int.Parse(Console.ReadLine()); //make separate function to check int later
+                    int input = consoleUI.AskForInteger("Please enter the entry number: ");
+                    string deleteEntry = entries[input];
+                    var splitDeleteEntry = deleteEntry.Split(",");
+                    string itemType = splitDeleteEntry[0];
+                    int itemIndex = int.Parse(splitDeleteEntry[1]);
+                    
+                    if(itemType == "photo"){
+                        trip.Photos.RemoveAt(itemIndex);
+                    }else if(itemType == "cost"){
+                        trip.Costs.RemoveAt(itemIndex);
+                    }else if (itemType == "note"){
+                        trip.Notes.RemoveAt(itemIndex);
+                    }
+                    fileSaver.SyncTripData(selectedTrip, Trips);
+                }else{
+                    Console.WriteLine("No entries available to delete!");
+                    break;
                 }
             }
         }
