@@ -1,4 +1,3 @@
-Photo,Mini,Disney,Day,04/14/2026 22:55:42
 Photo,Donald Duck,Teacup Ride,Morning,04/14/2026 22:55:35
-Cost,Ice Cream,5,Disney,04/14/2026 01:37:11
-Note,Cindarella Castle,is over 50 years old.,Tour Guide,04/14/2026 01:37:56
+Photo,Mini,Disney,Night,04/14/2026 22:55:42
+Cost,Water Bottle,2.555,Disney World,04/14/2026 01:37:11

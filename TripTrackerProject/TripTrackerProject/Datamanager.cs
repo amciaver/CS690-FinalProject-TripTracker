@@ -40,16 +40,7 @@ public class Datamanager{
     public void TrackCost(ConsoleUI consoleUI, string selectedTrip){
         
         string costDescription = consoleUI.AskForTrackItemString("Please enter a description: ");
-        double costPrice;
-        while (true){
-            string input = consoleUI.AskForInput(Environment.NewLine + "Please enter the price: ");
-            if(double.TryParse(input, out costPrice)){
-                break;
-            }
-            Console.WriteLine("Invalid Input. Please enter a number.");
-            
-        }
-
+        double costPrice = consoleUI.AskForPrice("Please enter the price: ");
         string costLocation = consoleUI.AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
         string costDateTimeStamp = DateTime.Now.ToString();
         Cost newCost = new Cost(costDescription, costPrice, costLocation, costDateTimeStamp);
@@ -209,17 +200,22 @@ public class Datamanager{
                     Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
                 }
                 if(entries.Count != 0){
-                    
-                    int input = consoleUI.AskForInteger("Please enter the entry number: ");
+                    int entriesCount = entries.Count();
+
+                    int input;
+                    do {
+                        input = consoleUI.AskForInteger("Please enter an integer equal to the entry number:");
+                    }while(input > entriesCount);
+
                     string deleteEntry = entries[input];
-                    Console.WriteLine("deleteEntry before split" + deleteEntry);
+                    //Console.WriteLine("deleteEntry before split" + deleteEntry);
                     var splitDeleteEntry = deleteEntry.Split(",");
                     string itemType = splitDeleteEntry[0];
                     int itemIndex = int.Parse(splitDeleteEntry[1]);
                     
 
                     if(itemType == "photo"){
-                        List <string> photoEditChoices = new List<string>{"Name", "Location", "Time Of Day"};
+                        List <string> photoEditChoices = new List<string>{"Name", "Location", "Time of Day"};
                         string editSelection = consoleUI.AskForSelection("Please select which property to edit", photoEditChoices);
                         
                         string photoName = trip.Photos[itemIndex].Name;
@@ -233,17 +229,34 @@ public class Datamanager{
                             photoLocation = consoleUI.AskForTrackItemString("Enter the new location:");
                         }else if (editSelection == "Time of Day"){
                             List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
-                            photoTimeOfDay = consoleUI.AskForSelection("Enter select the new time of day:", timeOfDayChoices);
+                            photoTimeOfDay = consoleUI.AskForSelection("Select the new time of day:", timeOfDayChoices);
                         }
 
-                        Console.WriteLine($"photoname is {photoName}");
                         trip.Photos.RemoveAt(itemIndex);
                         trip.Photos.Add(new Photo(photoName, photoLocation, photoTimeOfDay, photoDateTimeStamp));
                         
                     }else if(itemType == "cost"){
+
+                        List <string> costEditChoices = new List<string>{"Description", "Price", "Location"};
+                        string editSelection = consoleUI.AskForSelection("Please select which property to edit", costEditChoices);
+                        
+                        string costDescription = trip.Costs[itemIndex].Description;
+                        double costPrice = trip.Costs[itemIndex].Price;
+                        string costLocation = trip.Costs[itemIndex].Location;
+                        string costDateTimeStamp = trip.Costs[itemIndex].DateTimeStamp;
+
+                        if (editSelection == "Description"){
+                            costDescription = consoleUI.AskForTrackItemString("Enter the new name:");
+                        }else if(editSelection == "Price"){
+                            costPrice = consoleUI.AskForPrice("Enter the new price:");
+                        }else if (editSelection == "Location"){
+                            costLocation = consoleUI.AskForTrackItemString("Enter the new location:" );
+                        }
+
                         trip.Costs.RemoveAt(itemIndex);
+                        trip.Costs.Add(new Cost(costDescription, costPrice, costLocation, costDateTimeStamp));
                     }else if (itemType == "note"){
-                        trip.Notes.RemoveAt(itemIndex);
+                        //trip.Notes.RemoveAt(itemIndex);
                     }
                     fileSaver.SyncTripData(selectedTrip, Trips);
                 }else{

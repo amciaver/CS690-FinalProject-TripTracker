@@ -128,4 +128,17 @@ public class ConsoleUI {
             .Title(message)
             .AddChoices(choices));
     }
+
+    public double AskForPrice(string message){
+        double costPrice;
+        while (true){
+            string input = AskForInput(Environment.NewLine + message);
+            if(double.TryParse(input, out costPrice)){
+                break;
+            }
+            Console.WriteLine("Invalid Input. Please enter a number.");
+            
+        }
+        return costPrice;
+    }
 }
