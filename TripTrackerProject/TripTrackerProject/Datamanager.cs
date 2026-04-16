@@ -40,16 +40,7 @@ public class Datamanager{
     public void TrackCost(ConsoleUI consoleUI, string selectedTrip){
         
         string costDescription = consoleUI.AskForTrackItemString("Please enter a description: ");
-        double costPrice;
-        while (true){
-            string input = consoleUI.AskForInput(Environment.NewLine + "Please enter the price: ");
-            if(double.TryParse(input, out costPrice)){
-                break;
-            }
-            Console.WriteLine("Invalid Input. Please enter a number.");
-            
-        }
-
+        double costPrice = consoleUI.AskForPrice("Please enter the price: ");
         string costLocation = consoleUI.AskForTrackItemString(Environment.NewLine + "Please enter the location of the purchase: ");
         string costDateTimeStamp = DateTime.Now.ToString();
         Cost newCost = new Cost(costDescription, costPrice, costLocation, costDateTimeStamp);
@@ -156,8 +147,7 @@ public class Datamanager{
                     Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
                 }
                 if(entries.Count != 0){
-                    //Console.WriteLine("Please enter the entry number to delete: ");
-                   // int input = int.Parse(Console.ReadLine()); //make separate function to check int later
+                    
                     int input = consoleUI.AskForInteger("Please enter the entry number: ");
                     string deleteEntry = entries[input];
                     var splitDeleteEntry = deleteEntry.Split(",");
@@ -170,6 +160,123 @@ public class Datamanager{
                         trip.Costs.RemoveAt(itemIndex);
                     }else if (itemType == "note"){
                         trip.Notes.RemoveAt(itemIndex);
+                    }
+                    fileSaver.SyncTripData(selectedTrip, Trips);
+                }else{
+                    Console.WriteLine("No entries available to delete!");
+                    break;
+                }
+            }
+        }
+    }
+
+    public void EditTrackedEntry(ConsoleUI consoleUI, string selectedTrip){
+        foreach(Trip trip in Trips){
+            if (selectedTrip == trip.Name){
+                Dictionary<int,string> entries = new Dictionary<int,string>();
+                int entryNumber = 0;
+                int photoCount = -1;
+                int costCount = -1;
+                int noteCount = -1;
+
+                foreach(Photo photo in trip.Photos){
+                    entryNumber += 1;
+                    photoCount +=1;
+                    entries.Add(entryNumber,$"photo,{photoCount}");
+                    Console.WriteLine($"Entry {entryNumber}) {photo.Name},{photo.Location},{photo.TimeOfDay},{photo.DateTimeStamp}");
+                }
+
+                foreach(Cost cost in trip.Costs){
+                    entryNumber += 1;
+                    costCount += 1;               
+                    entries.Add(entryNumber,$"cost,{costCount}");
+                    Console.WriteLine($"Entry {entryNumber}) {cost.Description},{cost.Price},{cost.Location},{cost.DateTimeStamp}");
+                }   
+
+                foreach(Note note in trip.Notes){
+                    entryNumber += 1;
+                    noteCount += 1;
+                    entries.Add(entryNumber,$"note,{noteCount}");
+                    Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
+                }
+                if(entries.Count != 0){
+                    int entriesCount = entries.Count();
+
+                    int input;
+                    do {
+                        input = consoleUI.AskForInteger("Please enter an integer equal to the entry number:");
+                    }while(input > entriesCount);
+
+                    string deleteEntry = entries[input];
+                    //Console.WriteLine("deleteEntry before split" + deleteEntry);
+                    var splitDeleteEntry = deleteEntry.Split(",");
+                    string itemType = splitDeleteEntry[0];
+                    int itemIndex = int.Parse(splitDeleteEntry[1]);
+                    
+
+                    if(itemType == "photo"){
+                        List <string> photoEditChoices = new List<string>{"Name", "Location", "Time of Day"};
+                        string editSelection = consoleUI.AskForSelection("Please select which property to edit", photoEditChoices);
+                        
+                        string photoName = trip.Photos[itemIndex].Name;
+                        string photoLocation = trip.Photos[itemIndex].Location;
+                        string photoTimeOfDay = trip.Photos[itemIndex].TimeOfDay;
+                        string photoDateTimeStamp = trip.Photos[itemIndex].DateTimeStamp;
+
+                        if (editSelection == "Name"){
+                            photoName = consoleUI.AskForTrackItemString("Enter the new name:");
+                        }else if(editSelection == "Location"){
+                            photoLocation = consoleUI.AskForTrackItemString("Enter the new location:");
+                        }else if (editSelection == "Time of Day"){
+                            List<string> timeOfDayChoices = new List<string> {"Morning", "Day", "Night"};
+                            photoTimeOfDay = consoleUI.AskForSelection("Select the new time of day:", timeOfDayChoices);
+                        }
+
+                        trip.Photos.RemoveAt(itemIndex);
+                        trip.Photos.Add(new Photo(photoName, photoLocation, photoTimeOfDay, photoDateTimeStamp));
+                        
+                    }else if(itemType == "cost"){
+
+                        List <string> costEditChoices = new List<string>{"Description", "Price", "Location"};
+                        string editSelection = consoleUI.AskForSelection("Please select which property to edit", costEditChoices);
+                        
+                        string costDescription = trip.Costs[itemIndex].Description;
+                        double costPrice = trip.Costs[itemIndex].Price;
+                        string costLocation = trip.Costs[itemIndex].Location;
+                        string costDateTimeStamp = trip.Costs[itemIndex].DateTimeStamp;
+
+                        if (editSelection == "Description"){
+                            costDescription = consoleUI.AskForTrackItemString("Enter the new name:");
+                        }else if(editSelection == "Price"){
+                            costPrice = consoleUI.AskForPrice("Enter the new price:");
+                        }else if (editSelection == "Location"){
+                            costLocation = consoleUI.AskForTrackItemString("Enter the new location:" );
+                        }
+
+                        trip.Costs.RemoveAt(itemIndex);
+                        trip.Costs.Add(new Cost(costDescription, costPrice, costLocation, costDateTimeStamp));
+
+                    }else if (itemType == "note"){
+                        
+                        List <string> noteEditChoices = new List<string>{"Name", "Description", "Source"};
+                        string editSelection = consoleUI.AskForSelection("Please select which property to edit", noteEditChoices);
+                        
+                        string noteName = trip.Notes[itemIndex].Name;
+                        string noteDescription = trip.Notes[itemIndex].Description;
+                        string noteSource = trip.Notes[itemIndex].Source;
+                        string noteDateTimeStamp = trip.Notes[itemIndex].DateTimeStamp;
+
+                        if (editSelection == "Name"){
+                            noteName = consoleUI.AskForTrackItemString("Enter the new name:");
+                        }else if(editSelection == "Description"){
+                            noteDescription = consoleUI.AskForTrackItemString("Enter the new description:");
+                        }else if (editSelection == "Source"){
+                            noteSource = consoleUI.AskForTrackItemString("Enter the new source:" );
+                        }
+
+                        trip.Notes.RemoveAt(itemIndex);
+                        trip.Notes.Add(new Note(noteName, noteDescription, noteSource, noteDateTimeStamp));
+
                     }
                     fileSaver.SyncTripData(selectedTrip, Trips);
                 }else{
