@@ -255,8 +255,28 @@ public class Datamanager{
 
                         trip.Costs.RemoveAt(itemIndex);
                         trip.Costs.Add(new Cost(costDescription, costPrice, costLocation, costDateTimeStamp));
+
                     }else if (itemType == "note"){
-                        //trip.Notes.RemoveAt(itemIndex);
+                        
+                        List <string> noteEditChoices = new List<string>{"Name", "Description", "Source"};
+                        string editSelection = consoleUI.AskForSelection("Please select which property to edit", noteEditChoices);
+                        
+                        string noteName = trip.Notes[itemIndex].Name;
+                        string noteDescription = trip.Notes[itemIndex].Description;
+                        string noteSource = trip.Notes[itemIndex].Source;
+                        string noteDateTimeStamp = trip.Notes[itemIndex].DateTimeStamp;
+
+                        if (editSelection == "Name"){
+                            noteName = consoleUI.AskForTrackItemString("Enter the new name:");
+                        }else if(editSelection == "Description"){
+                            noteDescription = consoleUI.AskForTrackItemString("Enter the new description:");
+                        }else if (editSelection == "Source"){
+                            noteSource = consoleUI.AskForTrackItemString("Enter the new source:" );
+                        }
+
+                        trip.Notes.RemoveAt(itemIndex);
+                        trip.Notes.Add(new Note(noteName, noteDescription, noteSource, noteDateTimeStamp));
+
                     }
                     fileSaver.SyncTripData(selectedTrip, Trips);
                 }else{

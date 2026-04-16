@@ -1,3 +1,0 @@
-Photo,Donald Duck,Teacup Ride,Morning,04/14/2026 22:55:35
-Photo,Mini,Disney,Night,04/14/2026 22:55:42
-Cost,Water Bottle,2.555,Disney World,04/14/2026 01:37:11
