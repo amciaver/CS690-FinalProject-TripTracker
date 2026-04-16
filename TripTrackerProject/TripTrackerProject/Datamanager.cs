@@ -146,9 +146,14 @@ public class Datamanager{
                     entries.Add(entryNumber,$"note,{noteCount}");
                     Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
                 }
-                if(entries.Count != 0){
+                
+                int entriesCount = entries.Count();
+                if(entriesCount != 0){
                     
-                    int input = consoleUI.AskForInteger("Please enter the entry number: ");
+                    int input;
+                    do {
+                        input = consoleUI.AskForInteger("Please enter the entry number:");
+                    }while(input > entriesCount || input <= 0);
                     string deleteEntry = entries[input];
                     var splitDeleteEntry = deleteEntry.Split(",");
                     string itemType = splitDeleteEntry[0];
@@ -162,6 +167,7 @@ public class Datamanager{
                         trip.Notes.RemoveAt(itemIndex);
                     }
                     fileSaver.SyncTripData(selectedTrip, Trips);
+
                 }else{
                     Console.WriteLine("No entries available to delete!");
                     break;
@@ -199,16 +205,16 @@ public class Datamanager{
                     entries.Add(entryNumber,$"note,{noteCount}");
                     Console.WriteLine($"Entry {entryNumber}) {note.Name},{note.Description},{note.Source},{note.DateTimeStamp}");
                 }
-                if(entries.Count != 0){
-                    int entriesCount = entries.Count();
+                
+                int entriesCount = entries.Count();
+                if(entriesCount != 0){
 
                     int input;
                     do {
-                        input = consoleUI.AskForInteger("Please enter an integer equal to the entry number:");
-                    }while(input > entriesCount);
+                        input = consoleUI.AskForInteger("Please enter the entry number:");
+                    }while(input > entriesCount || input <= 0);
 
                     string deleteEntry = entries[input];
-                    //Console.WriteLine("deleteEntry before split" + deleteEntry);
                     var splitDeleteEntry = deleteEntry.Split(",");
                     string itemType = splitDeleteEntry[0];
                     int itemIndex = int.Parse(splitDeleteEntry[1]);
@@ -279,6 +285,7 @@ public class Datamanager{
 
                     }
                     fileSaver.SyncTripData(selectedTrip, Trips);
+
                 }else{
                     Console.WriteLine("No entries available to delete!");
                     break;
